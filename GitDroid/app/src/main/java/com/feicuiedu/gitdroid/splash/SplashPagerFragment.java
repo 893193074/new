@@ -14,8 +14,8 @@ import android.widget.ImageView;
 import com.feicuiedu.gitdroid.R;
 import com.feicuiedu.gitdroid.splash.pager.Pager2;
 
-import butterknife.Bind;
 import butterknife.BindColor;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.relex.circleindicator.CircleIndicator;
 
@@ -25,40 +25,24 @@ import me.relex.circleindicator.CircleIndicator;
  */
 public class SplashPagerFragment extends Fragment {
 
+    @BindView(R.id.viewPager)ViewPager viewPager;
+    @BindView(R.id.indicator)CircleIndicator indicator; // 指示器
+    @BindView(R.id.content) FrameLayout frameLayout; // 当前页面Layout(主要为了更新其背景颜色)
+    @BindView(R.id.layoutPhone) FrameLayout layoutPhone;// 屏幕中央的"手机"
+    @BindView(R.id.ivPhoneFont) ImageView ivPhoneFont;
 
-
-    @BindColor(R.color.colorGreen)
-    int colorGreen;
-    @BindColor(R.color.colorRed)
-    int colorRed;
-    @BindColor(R.color.colorYellow)
-    int colorYellow;
-
-
-    @Bind(R.id.ivPhoneFont)
-    ImageView ivPhoneFont;
-    @Bind(R.id.layoutPhone)
-    FrameLayout layoutPhone;
-    @Bind(R.id.viewPager)
-    ViewPager viewPager;
-    @Bind(R.id.indicator)
-    CircleIndicator indicator;
-    @Bind(R.id.content)
-    FrameLayout frameLayout;
+    @BindColor(R.color.colorGreen) int colorGreen;
+    @BindColor(R.color.colorRed) int colorRed;
+    @BindColor(R.color.colorYellow) int colorYellow;
 
     private SplashPagerAdapter adapter;
 
     // 生成代码
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_splash_pager, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+    @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_splash_pager, container, false);
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         adapter = new SplashPagerAdapter(getContext());
@@ -74,8 +58,7 @@ public class SplashPagerFragment extends Fragment {
         final ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
         // 在Scroll过程中进行触发的方法
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             // 第一个页面到第二个页面之间
             if (position == 0) {
                 int color = (int) argbEvaluator.evaluate(positionOffset, colorGreen, colorRed);
@@ -89,20 +72,17 @@ public class SplashPagerFragment extends Fragment {
             }
         }
 
-        @Override
-        public void onPageSelected(int position) {
+        @Override public void onPageSelected(int position) {
 
         }
 
-        @Override
-        public void onPageScrollStateChanged(int state) {
+        @Override public void onPageScrollStateChanged(int state) {
         }
     };
 
     // 主要为了做"手机"的动画效果处理(平移、缩放、透明度变化)
     private ViewPager.OnPageChangeListener phoneViewListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             // 第一个页面到第二个页面之间
             if (position == 0) {
                 // 手机的缩放处理
@@ -122,24 +102,16 @@ public class SplashPagerFragment extends Fragment {
             }
         }
 
-        @Override
-        public void onPageSelected(int position) {
+        @Override public void onPageSelected(int position) {
             // 当显示出最后一个pager时，播放它自己的动画
-            if (position == 2) {
+            if(position == 2) {
                 Pager2 pager2View = (Pager2) adapter.getView(position);
                 pager2View.showAnimation();
             }
         }
 
-        @Override
-        public void onPageScrollStateChanged(int state) {
+        @Override public void onPageScrollStateChanged(int state) {
 
         }
     };
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
 }

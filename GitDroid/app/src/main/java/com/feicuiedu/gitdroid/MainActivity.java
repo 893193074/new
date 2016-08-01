@@ -10,10 +10,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
+import com.feicuiedu.gitdroid.commons.ActivityUtils;
 import com.feicuiedu.gitdroid.hotrepo.HotRepoFragment;
+import com.feicuiedu.gitdroid.login.LoginActivity;
+import com.feicuiedu.gitdroid.login.UserRepo;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -21,27 +28,27 @@ import butterknife.ButterKnife;
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.navigationView)
-    NavigationView navigationView;
-    @Bind(R.id.drawerLayout)
-    DrawerLayout drawerLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.drawerLayout) DrawerLayout drawerLayout; // 抽屉(包含内容+侧滑菜单)
+    @BindView(R.id.navigationView) NavigationView navigationView; // 侧滑菜单视图
 
     // 热门仓库Fragment
     private HotRepoFragment hotRepoFragment;
 
+    private Button btnLogin;
+    private ImageView ivIcon;
+
+    private ActivityUtils activityUtils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityUtils = new ActivityUtils(this);
         // 设置当前视图(也就是说，更改了当前视图内容,将导至onContentChanged方法触发)
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
     }
 
-    @Override
-    public void onContentChanged() {
+    @Override public void onContentChanged() {
         super.onContentChanged();
         ButterKnife.bind(this);
         // ActionBar处理
@@ -53,10 +60,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();// 根据drawerlayout同步其当前状态
         // 设置抽屉监听
         drawerLayout.setDrawerListener(toggle);
+        View headerView = navigationView.inflateHeaderView(R.layout.layout_nav_header_main);
+        btnLogin = (Button) headerView.findViewById(R.id.btnLogin);
+        ivIcon = (ImageView) headerView.findViewById(R.id.ivIcon);
 
+//        btnLogin = ButterKnife.findById(navigationView.inflateHeaderView(0), R.id.btnLogin);
+//        ivIcon = ButterKnife.findById(navigationView.inflateHeaderView(0), R.id.ivIcon);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                activityUtils.startActivity(LoginActivity.class);
+                finish();
+            }
+        });
         // 默认显示的是热门仓库fragment
         hotRepoFragment = new HotRepoFragment();
         replaceFragment(hotRepoFragment);
+    }
+
+    @Override protected void onStart() {
+        super.onStart();
+        // 没有授权的话
+        if (UserRepo.isEmpty()) {
+            btnLogin.setText(R.string.login_github);
+            return;
+        }
+        btnLogin.setText(R.string.switch_account);
+        // 设置Title
+        getSupportActionBar().setTitle(UserRepo.getUser().getName());
+        // 设置用户头像
+        String photoUrl = UserRepo.getUser().getAvatar();
+        ImageLoader.getInstance().displayImage(photoUrl, ivIcon);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -67,8 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     // 侧滑菜单监听器
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    @Override public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // 热门仓库
             case R.id.github_hot_repo:

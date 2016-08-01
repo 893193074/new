@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.feicuiedu.gitdroid.MainActivity;
 import com.feicuiedu.gitdroid.R;
 import com.feicuiedu.gitdroid.commons.ActivityUtils;
+import com.feicuiedu.gitdroid.login.LoginActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,7 +32,8 @@ public class SplashActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnLogin)
     public void login(){
-
+        activityUtils.startActivity(LoginActivity.class);
+        finish();
     }
 
     @OnClick(R.id.btnEnter)

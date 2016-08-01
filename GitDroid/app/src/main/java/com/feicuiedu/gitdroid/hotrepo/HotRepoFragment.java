@@ -11,49 +11,34 @@ import android.view.ViewGroup;
 
 import com.feicuiedu.gitdroid.R;
 
-import butterknife.Bind;
-
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * 热门仓库Fragment
- * <p/>
+ *
  * 里面放着一个ViewPager，在Adapter里面，每一个pager面都是一个Fragment
- * <p/>
+ *
  * 作者：yuanchao on 2016/7/27 0027 14:27
  * 邮箱：yuanchao@feicuiedu.com
  */
-public class HotRepoFragment extends Fragment {
+public class HotRepoFragment extends Fragment{
 
-
-    @Bind(R.id.tabLayout)
-    TabLayout tabLayout;
-    @Bind(R.id.viewPager)
-    ViewPager viewPager;
+    @BindView(R.id.viewPager) ViewPager viewPager;
+    @BindView(R.id.tabLayout) TabLayout tabLayout;
 
     private HotRepoAdapter adapter;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_hot_repo, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+    @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_hot_repo, container, false);
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        adapter = new HotRepoAdapter(getChildFragmentManager());
+        adapter = new HotRepoAdapter(getChildFragmentManager(),getContext());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 }
