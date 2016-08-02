@@ -3,13 +3,15 @@ package com.feicuiedu.gitdroid.login.modle;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * 授权登陆响应结果
  *
  * 作者：yuanchao on 2016/7/29 0029 12:08
  * 邮箱：yuanchao@feicuiedu.com
  */
-public class AccessTokenResult {
+public class AccessTokenResult implements Serializable {
 
     @SerializedName("access_token")
     private String accessToken;

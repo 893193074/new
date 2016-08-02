@@ -1,16 +1,16 @@
-package com.feicuiedu.gitdroid.hotrepo.repolist.modle;
+package com.feicuiedu.gitdroid.userinfo.model.model;
 
+
+import com.feicuiedu.gitdroid.login.modle.User;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
- * 搜索仓库响应结果
- * 作者：yuanchao on 2016/8/1 0001 11:01
+ * 作者：yuanchao on 2016/8/2 0002 11:05
  * 邮箱：yuanchao@feicuiedu.com
  */
-public class RepoResult implements Serializable {
+public class UsersResult {
 
     @SerializedName("total_count")
     private int totalCount;
@@ -19,7 +19,7 @@ public class RepoResult implements Serializable {
     private boolean incompleteResults;
 
     @SerializedName("items")
-    private List<Repo> repoList;
+    private List<User> userList;
 
     public int getTotalCount() {
         return totalCount;
@@ -29,14 +29,11 @@ public class RepoResult implements Serializable {
         return incompleteResults;
     }
 
-    public List<Repo> getRepoList() {
-        return repoList;
+    public List<User> getRepoList() {
+        return userList;
     }
-
-
-    //    {
-//        "total_count": 2074901,
+    
+//    "total_count": 603,
 //            "incomplete_results": false,
-//            "items": [{}]
-//    }
+//            "items": [
 }

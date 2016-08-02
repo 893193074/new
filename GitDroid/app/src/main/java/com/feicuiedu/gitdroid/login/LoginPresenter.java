@@ -5,6 +5,8 @@ import com.feicuiedu.gitdroid.login.modle.User;
 import com.feicuiedu.gitdroid.network.GitHubApi;
 import com.feicuiedu.gitdroid.network.GitHubClient;
 
+import java.io.Serializable;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -13,7 +15,7 @@ import retrofit2.Response;
  * 作者：yuanchao on 2016/7/29 0029 12:01
  * 邮箱：yuanchao@feicuiedu.com
  */
-public class LoginPresenter {
+public class LoginPresenter  {
 
     private Call<AccessTokenResult> tokenCall;
     private Call<User> userCall;

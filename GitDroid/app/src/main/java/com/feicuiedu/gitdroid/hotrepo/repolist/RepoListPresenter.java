@@ -27,7 +27,7 @@ public class RepoListPresenter {
     public RepoListPresenter(RepoListView repoListView, Language language) {
         this.repoListView = repoListView;
         this.language = language;
-    }+
+    }
 
     // 下拉刷新处理
     public void refresh() {

@@ -3,11 +3,13 @@ package com.feicuiedu.gitdroid.hotrepo.repolist.modle;
 import com.feicuiedu.gitdroid.login.modle.User;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * 作者：yuanchao on 2016/8/1 0001 11:03
  * 邮箱：yuanchao@feicuiedu.com
  */
-public class Repo {
+public class Repo implements Serializable{
 
     private int id;
     // 仓库名称

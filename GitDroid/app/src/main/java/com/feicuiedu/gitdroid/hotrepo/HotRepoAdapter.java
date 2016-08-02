@@ -19,7 +19,7 @@ public class HotRepoAdapter extends FragmentPagerAdapter {
     public HotRepoAdapter(FragmentManager fm, Context context) {
         super(fm);
         languages = Language.getDefaultLanguages(context);
-    }
+}
 
     @Override public Fragment getItem(int position) {
         // RepoListFragment

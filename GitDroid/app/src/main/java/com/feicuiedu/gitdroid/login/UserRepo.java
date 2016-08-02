@@ -2,6 +2,8 @@ package com.feicuiedu.gitdroid.login;
 
 import com.feicuiedu.gitdroid.login.modle.User;
 
+import java.io.Serializable;
+
 /**
  * 此类是一个用来缓存当前用户信息的，极简单的实现
  *
@@ -10,7 +12,7 @@ import com.feicuiedu.gitdroid.login.modle.User;
  * 作者：yuanchao on 2016/7/29 0029 15:57
  * 邮箱：yuanchao@feicuiedu.com
  */
-public class UserRepo {
+public class UserRepo implements Serializable {
     private UserRepo(){}
 
     private static String accessToken;

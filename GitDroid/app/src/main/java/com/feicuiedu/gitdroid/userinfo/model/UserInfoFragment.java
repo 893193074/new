@@ -1,4 +1,4 @@
-package com.feicuiedu.gitdroid.hotrepo.repolist;
+package com.feicuiedu.gitdroid.userinfo.model;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,17 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.feicuiedu.gitdroid.R;
 import com.feicuiedu.gitdroid.commons.ActivityUtils;
 import com.feicuiedu.gitdroid.components.FooterView;
-import com.feicuiedu.gitdroid.hotrepo.Language;
-import com.feicuiedu.gitdroid.hotrepo.repolist.modle.Repo;
-import com.feicuiedu.gitdroid.hotrepo.repolist.view.RepoListView;
-import com.feicuiedu.gitdroid.repoinfo.RepoInfoActivity;
+import com.feicuiedu.gitdroid.login.modle.User;
+import com.feicuiedu.gitdroid.userinfo.model.view.UserListView;
 import com.mugen.Mugen;
 import com.mugen.MugenCallbacks;
 
@@ -30,88 +27,48 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.header.StoreHouseHeader;
 
 /**
- * 仓库列表
+ * 热门用户Fragment，主要使用ListView对用户列表进行显示
  * <p/>
- * 将显示当前语言的所有仓库，有下拉刷新，上拉加载更多的效果
- * <p/>
- * 作者：yuanchao on 2016/7/27 0027 14:37
+ * 作者：yuanchao on 2016/8/2 0002 10:06
  * 邮箱：yuanchao@feicuiedu.com
  */
-public class RepoListFragment extends Fragment
-        implements RepoListView {
+public class UserInfoFragment extends Fragment implements UserListView {
 
-    private static final String KEY_LANGUAGE = "key_language";
-
-    public static RepoListFragment getInstance(Language language){
-        RepoListFragment fragment = new RepoListFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(KEY_LANGUAGE,language);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    private Language getLanguage() {
-        return (Language)getArguments().getSerializable(KEY_LANGUAGE);
-    }
-
-    @BindView(R.id.lvRepos) ListView listView;
-    @BindView(R.id.emptyView) TextView emptyView;
-    @BindView(R.id.errorView) TextView errorView;
-    @BindView(R.id.ptrClassicFrameLayout) PtrClassicFrameLayout ptrFrameLayout;
-
-    private RepoListAdapter adapter;
-
-    // 用来做当前页面业务逻辑及视图更新的
-    private RepoListPresenter presenter;
-
-    private FooterView footerView; // 上拉加载更多的视图
     private ActivityUtils activityUtils;
 
+    @BindView(R.id.emptyView) TextView emptyView;   // 没有更多数据时的空视图
+    @BindView(R.id.errorView) TextView errorView;   // 数据获取时的错误视图
+    @BindView(R.id.lvRepos) ListView listView;      // 用来展示数据的列表视图
+    @BindView(R.id.ptrClassicFrameLayout) PtrClassicFrameLayout ptrFrameLayout;
+
+    private FooterView footerView; // 上拉加载更多的视图
+    private UserInfoPresenter presenter;
+    private UserListAdapter adapter;
+
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_repo_list, container, false);
+        return inflater.inflate(R.layout.fragment_hot_user, container, false);
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         activityUtils = new ActivityUtils(this);
-        presenter = new RepoListPresenter(this, getLanguage());
-
-        adapter = new RepoListAdapter();
+        presenter = new UserInfoPresenter(this);
+        //
+        adapter = new UserListAdapter();
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Repo repo = adapter.getItem(position);
-                RepoInfoActivity.open(getContext(),repo);
-            }
-        });
         // 初始下拉刷新
         initPullToRefresh();
         // 初始上拉加载更多
         initLoadMoreScroll();
-    }
-
-    private void initLoadMoreScroll() {
-        footerView = new FooterView(getContext());
-        Mugen.with(listView, new MugenCallbacks() {
-            // listview，滚动到底部,将触发此方法
-            @Override public void onLoadMore() {
-                // 执行上拉加载数据的业务处理
-                presenter.loadMore();
-            }
-
-            // 是否正在加载中
-            // 其内部将用此方法来判断是否触发onLoadMore
-            @Override public boolean isLoading() {
-                return listView.getFooterViewsCount() > 0 && footerView.isLoading();
-            }
-
-            // 是否已加载完成所有数据
-            // 其内部将用此方法来判断是否触发onLoadMore
-            @Override public boolean hasLoadedAllItems() {
-                return listView.getFooterViewsCount() > 0 && footerView.isComplete();
-            }
-        }).start();
+        // 如果当前页面没有数据，开始自动刷新
+        if (adapter.getCount() == 0) {
+            ptrFrameLayout.postDelayed(new Runnable() {
+                @Override public void run() {
+                    ptrFrameLayout.autoRefresh();
+                }
+            }, 200);
+        }
     }
 
     private void initPullToRefresh() {
@@ -136,6 +93,29 @@ public class RepoListFragment extends Fragment
         ptrFrameLayout.setHeaderView(header);
         ptrFrameLayout.addPtrUIHandler(header);
         ptrFrameLayout.setBackgroundResource(R.color.colorRefresh);
+    }
+
+    private void initLoadMoreScroll() {
+        footerView = new FooterView(getContext());
+        Mugen.with(listView, new MugenCallbacks() {
+            // listview，滚动到底部,将触发此方法
+            @Override public void onLoadMore() {
+                // 执行上拉加载数据的业务处理
+                presenter.loadMore();
+            }
+
+            // 是否正在加载中
+            // 其内部将用此方法来判断是否触发onLoadMore
+            @Override public boolean isLoading() {
+                return listView.getFooterViewsCount() > 0 && footerView.isLoading();
+            }
+
+            // 是否已加载完成所有数据
+            // 其内部将用此方法来判断是否触发onLoadMore
+            @Override public boolean hasLoadedAllItems() {
+                return listView.getFooterViewsCount() > 0 && footerView.isComplete();
+            }
+        }).start();
     }
 
     // 下拉刷新视图实现----------------------------------------
@@ -171,7 +151,7 @@ public class RepoListFragment extends Fragment
     }
 
     @Override
-    public void refreshData(List<Repo> datas) {
+    public void refreshData(List<User> datas) {
         adapter.clear();
         adapter.addAll(datas);
     }
@@ -195,7 +175,7 @@ public class RepoListFragment extends Fragment
         footerView.showError(erroMsg);
     }
 
-    @Override public void addMoreData(List<Repo> datas) {
+    @Override public void addMoreData(List<User> datas) {
         adapter.addAll(datas);
     }
 }
