@@ -19,10 +19,12 @@ import com.feicuiedu.gitdroid.R;
 import com.feicuiedu.gitdroid.commons.ActivityUtils;
 import com.feicuiedu.gitdroid.favorite.FavoriteFragment;
 
+import com.feicuiedu.gitdroid.gank.GankFragment;
 import com.feicuiedu.gitdroid.hotrepo.HotRepoFragment;
 import com.feicuiedu.gitdroid.login.LoginActivity;
 import com.feicuiedu.gitdroid.login.UserRepo;
-import com.feicuiedu.gitdroid.userinfo.model.UserInfoFragment;
+
+import com.feicuiedu.gitdroid.userinfo.UserInfoFragment;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import butterknife.BindView;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private HotRepoFragment hotRepoFragment;
     private UserInfoFragment hotUserFragment;
     private FavoriteFragment favoriteFragment;
-
+    private GankFragment gankFragment;
     private Button btnLogin;
     private ImageView ivIcon;
 
@@ -128,6 +130,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(favoriteFragment == null)favoriteFragment = new FavoriteFragment();
                 if(!favoriteFragment.isAdded()){
                     replaceFragment(favoriteFragment);
+                }
+                break;
+            // 每日干货
+            case R.id.tips_daily:
+                if(gankFragment == null)gankFragment = new GankFragment();
+                if(!gankFragment.isAdded()){
+                    replaceFragment(gankFragment);
                 }
                 break;
         }

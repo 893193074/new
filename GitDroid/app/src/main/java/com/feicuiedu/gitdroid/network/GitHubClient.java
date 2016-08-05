@@ -4,7 +4,7 @@ import com.feicuiedu.gitdroid.hotrepo.repolist.modle.RepoResult;
 import com.feicuiedu.gitdroid.login.modle.AccessTokenResult;
 import com.feicuiedu.gitdroid.login.modle.User;
 import com.feicuiedu.gitdroid.repoinfo.RepoContentResult;
-import com.feicuiedu.gitdroid.userinfo.model.model.UsersResult;
+import com.feicuiedu.gitdroid.userinfo.model.UsersResult;
 
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
